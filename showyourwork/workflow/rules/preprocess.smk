@@ -10,6 +10,11 @@ from showyourwork import paths
 
 joined_user_args = " ".join(config["user_args"] )
 
+# Allow user to define their own tectonic.yml file in their repo:
+tectonic_yml = paths.user().repo / "tectonic.yml"
+if not tectonic_yml.exists():
+    tectonic_yml = paths.showyourwork().envs / "tectonic.yml"
+
 rule:
     """
     Setup the temporary files for compilation.
@@ -49,7 +54,7 @@ rule:
     output:
         (paths.user().preprocess / "showyourwork.xml").as_posix()
     conda:
-        (paths.showyourwork().envs / "tectonic.yml").as_posix()
+        tectonic_yml.as_posix()
     shell:
         """
         cd "{input.compile_dir}"
